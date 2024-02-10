@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Encrypt</title>
+  <script src="index.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script language="javascript" type="text/javascript">
+    $(function () {
+      $("#fileupload").change(function () {
+        $("#dvPreview").html("");
+        var filePath = $(this).val();
+        fileNamearray = filePath.split("\\")
+        fileName = fileNamearray[fileNamearray.length - 1]
+        console.log(fileName);
+        $("#fileName").attr("value", fileName);
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp)$/;
+        if (regex.test($(this).val().toLowerCase())) {
+          if ($.browser.msie && parseFloat(jQuery.browser.version) <= 9.0) {
+            $("#dvPreview").show();
+            $("#dvPreview")[0].filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = $(this).val();
+          }
+          else {
+            if (typeof (FileReader) != "undefined") {
+              $("#dvPreview").show();
+              $("#dvPreview").append("<img />");
+              var reader = new FileReader();
+              reader.onload = function (e) {
+                $("#dvPreview img").attr("src", e.target.result);
+                // document.getElementById('mySrc').innerHTML = document.getElementById('dvPreview').getElementsByTagName('img')[0].src;
+                document.getElementById('mySrce').innerHTML = fileName;
+
+
+              }
+              reader.readAsDataURL($(this)[0].files[0]);
+            } else {
+              alert("This browser does not support FileReader.");
+            }
+          }
+        } else {
+          alert("Please upload a valid image file.");
+        }
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+  <h2 class="title-1">Encrypt Your File</h2>
+
+  <form action="/encryptSubmit" method="post" enctype="multipart/form-data">
+    <div class="container-1">
+      <div class="fileupload">
+        <input type="file" id="fileupload" name="image" accept="image/*" />
+        <button>Select File</button>
+      </div>
+      <div>
+        <input type="text" id="key" name="key" placeholder="Enter Key" class="encrypt-btn" />
+      </div>
+      <div>
+        <input type="text" id="fileName" name="fileName" hidden />
+      </div>
+      <div>
+        <button id="button" class="encrypt-btn" type="submit" value="Submit" onclick="setDiv()">Encrypt</button>
+      </div>
+  </form>
+  <div class="preview-e">
+    <h3>Preview</h3>
+    <div id="dvPreview">
+    </div>
+    <div id="mySrce">
+    </div>
+  </div>
+  </div>
+
+  <!-- /* Exit-Form */ -->
+  <button class="exit-button" onclick="openForm()">^</button>
+  <a href="Dashboard.html"><button class="back-button" onclick=""><img src="go-back-arrow.png" alt=""
+        class="bck-btn"></button></a>
+  <div class="exit-formpopup" id="myForm">
+    <form action="home.html" class="exit-formcontainer">
+      <button type="button" class="exit-cancel" onclick="closeForm()">X</button>
+      <p class="exit-text">Warning..!!!
+        Do Not Share your public key with anyone..!!
+      </p>
+      <button class="exit-btn" type="submit">Sign out</button>
+    </form>
+  </div>
+  <!-- /* Exit-Form */ -->
+
+  <script>
+    function setDiv() {
+      var name = document.getElementById('mySrce').value;
+      var resultDiv = document.getElementById('fileName');
+      console.log("in setDiv");
+      resultDiv.innerHTML = name;
+    }
+  </script>
+</body>
+
+</html>
